@@ -1,0 +1,10 @@
+{% from "_includes/forms" import textField, lightswitchField %}
+
+{{ textField({
+    label: 'API Key'|t('commerce'),
+    id: 'apiKey',
+    class: 'ltr',
+    name: 'apiKey',
+    value: gateway.apiKey,
+    errors: gateway.getErrors('apiKey')
+}) }}

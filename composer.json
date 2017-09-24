@@ -1,0 +1,48 @@
+{
+  "name": "craftcms/commerce-mollie",
+  "description": "Mollie integration for Craft Commerce",
+  "version": "1.0.0",
+  "type": "craft-plugin",
+  "keywords": [
+    "mollie",
+    "commerce",
+    "craftcms",
+    "omnipay",
+    "yii2"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Pixel & Tonic",
+      "homepage": "https://pixelandtonic.com/"
+    }
+  ],
+  "support": {
+    "email": "support@craftcms.com",
+    "issues": "https://github.com/craftcms/commerce-mollie/issues?state=open",
+    "source": "https://github.com/craftcms/commerce-mollie",
+    "docs": "https://github.com/craftcms/commerce-mollie",
+    "rss": "https://github.com/craftcms/commerce-mollie/commits/master.atom"
+  },
+  "require": {
+    "craftcms/commerce-mollie": "*",
+    "omnipay/mollie": "~3.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "craft\\commerce\\mollie\\": "src/"
+    }
+  },
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://asset-packagist.org"
+    }
+  ],
+  "extra": {
+    "name": "Mollie",
+    "handle": "commerce-mollie",
+    "changelogUrl": "https://raw.githubusercontent.com/craftcms/commerce-mollie/master/CHANGELOG.md",
+    "downloadUrl": "https://github.com/craftcms/commerce-mollie/archive/master.zip"
+  }
+}
