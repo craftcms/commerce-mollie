@@ -12,7 +12,7 @@ use Omnipay\Mollie\Gateway as OmnipayGateway;
 use yii\base\NotSupportedException;
 
 /**
- * PayPalPro represents PayPalPro gateway
+ * Gateway represents Mollie gateway
  *
  * @author    Pixel & Tonic, Inc. <support@pixelandtonic.com>
  * @since     1.0
