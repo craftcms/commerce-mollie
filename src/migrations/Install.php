@@ -46,7 +46,7 @@ class Install extends Migration
     // =========================================================================
 
     /**
-     * Converts any old school Stripe gateways to this one
+     * Converts any old school Mollie gateways to this one
      *
      * @return void
      */
