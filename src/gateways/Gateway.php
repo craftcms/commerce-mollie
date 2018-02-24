@@ -57,9 +57,30 @@ class Gateway extends OffsiteGateway
     /**
      * @inheritdoc
      */
+    public function getPaymentTypeOptions(): array
+    {
+        return [
+            'purchase' => Craft::t('commerce', 'Purchase (Authorize and Capture Immediately)')
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getSettingsHtml()
     {
         return Craft::$app->getView()->renderTemplate('commerce-mollie/gatewaySettings', ['gateway' => $this]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules(): array
+    {
+        $rules = parent::rules();
+        $rules[] = ['paymentType', 'compare', 'compareValue' => 'purchase'];
+
+        return $rules;
     }
 
     // Protected Methods
