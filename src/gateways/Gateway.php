@@ -33,22 +33,6 @@ class Gateway extends OffsiteGateway
     /**
      * @inheritdoc
      */
-    public function completeAuthorize(Transaction $transaction): RequestResponseInterface
-    {
-        if (!$this->supportsCompleteAuthorize()) {
-            throw new NotSupportedException(Craft::t('commerce', 'Completing authorization is not supported by this gateway'));
-        }
-
-        $request = $this->createRequest($transaction);
-        $request['transactionReference'] = $transaction->reference;
-        $completeRequest = $this->prepareCompleteAuthorizeRequest($request);
-
-        return $this->performRequest($completeRequest, $transaction);
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function completePurchase(Transaction $transaction): RequestResponseInterface
     {
         if (!$this->supportsCompletePurchase()) {
