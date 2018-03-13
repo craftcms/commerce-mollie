@@ -1,4 +1,4 @@
-Mollie payment gateway for Craft Commerce
+Mollie payment gateway plugin for Craft Commerce 2
 =======================
 
 This plugin provides [Mollie](https://www.mollie.com/) integration for [Craft Commerce](https://craftcommerce.com/).
@@ -7,7 +7,7 @@ It provides the Mollie gateway.
 
 ## Requirements
 
-This plugin requires Craft Commerce 2.0.1-alpha.4 or later.
+This plugin requires Craft Commerce 2.0.0-alpha.5 or later.
 
 ## Installation
 
