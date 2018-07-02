@@ -43,17 +43,16 @@ class Gateway extends OffsiteGateway
      */
     public function populateRequest(array &$request, BasePaymentForm $paymentForm = null)
     {
-        /** @var MollieOffsitePaymentForm $paymentForm */
-        if ($paymentForm->paymentMethod)
-        {
-            $request['paymentMethod'] = $paymentForm->paymentMethod;
-        }
+        if ($paymentForm) {
+            /** @var MollieOffsitePaymentForm $paymentForm */
+            if ($paymentForm->paymentMethod) {
+                $request['paymentMethod'] = $paymentForm->paymentMethod;
+            }
 
-        if ($paymentForm->issuer)
-        {
-            $request['issuer'] = $paymentForm->issuer;
+            if ($paymentForm->issuer) {
+                $request['issuer'] = $paymentForm->issuer;
+            }
         }
-
     }
 
     /**
@@ -185,6 +184,6 @@ class Gateway extends OffsiteGateway
      */
     protected function getGatewayClassName()
     {
-        return '\\'.OmnipayGateway::class;
+        return '\\' . OmnipayGateway::class;
     }
 }
