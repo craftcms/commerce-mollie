@@ -1,11 +1,19 @@
 <?php
+/**
+ * @link https://craftcms.com/
+ * @copyright Copyright (c) Pixel & Tonic, Inc.
+ * @license https://craftcms.github.io/license/
+ */
 
 namespace craft\commerce\mollie\gateways;
 
 use Craft;
 use craft\commerce\base\RequestResponseInterface;
+use craft\commerce\models\payments\BasePaymentForm;
 use craft\commerce\models\Transaction;
 use craft\commerce\omnipay\base\OffsiteGateway;
+use craft\web\View;
+use craft\commerce\mollie\models\forms\MollieOffsitePaymentForm;
 use Omnipay\Common\AbstractGateway;
 use Omnipay\Omnipay;
 use Omnipay\Mollie\Gateway as OmnipayGateway;
@@ -29,6 +37,24 @@ class Gateway extends OffsiteGateway
 
     // Public Methods
     // =========================================================================
+
+    /**
+     * @inheritdoc
+     */
+    public function populateRequest(array &$request, BasePaymentForm $paymentForm = null)
+    {
+        /** @var MollieOffsitePaymentForm $paymentForm */
+        if ($paymentForm->paymentMethod)
+        {
+            $request['paymentMethod'] = $paymentForm->paymentMethod;
+        }
+
+        if ($paymentForm->issuer)
+        {
+            $request['issuer'] = $paymentForm->issuer;
+        }
+
+    }
 
     /**
      * @inheritdoc
@@ -75,12 +101,67 @@ class Gateway extends OffsiteGateway
     /**
      * @inheritdoc
      */
+    public function getPaymentFormModel(): BasePaymentForm
+    {
+        return new MollieOffsitePaymentForm();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPaymentFormHtml(array $params)
+    {
+        $defaults = [
+            'gateway' => $this,
+            'paymentForm' => $this->getPaymentFormModel(),
+            'paymentMethods' => $this->fetchPaymentMethods(),
+            'issuers' => $this->fetchIssuers(),
+        ];
+
+        $params = array_merge($defaults, $params);
+
+        $view = Craft::$app->getView();
+
+        $previousMode = $view->getTemplateMode();
+        $view->setTemplateMode(View::TEMPLATE_MODE_CP);
+
+        $html = $view->renderTemplate('commerce-mollie/paymentForm', $params);
+        $view->setTemplateMode($previousMode);
+
+        return $html;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function rules()
     {
         $rules = parent::rules();
         $rules[] = ['paymentType', 'compare', 'compareValue' => 'purchase'];
 
         return $rules;
+    }
+
+    /**
+     * @param array $parameters
+     * @return mixed
+     */
+    public function fetchPaymentMethods(array $parameters = [])
+    {
+        $paymentMethodsRequest = $this->createGateway()->fetchPaymentMethods($parameters);
+
+        return $paymentMethodsRequest->sendData($paymentMethodsRequest->getData())->getPaymentMethods();
+    }
+
+    /**
+     * @param array $parameters
+     * @return mixed
+     */
+    public function fetchIssuers(array $parameters = [])
+    {
+        $issuersRequest = $this->createGateway()->fetchIssuers($parameters);
+
+        return $issuersRequest->sendData($issuersRequest->getData())->getIssuers();
     }
 
     // Protected Methods

@@ -8,7 +8,7 @@
 namespace craft\commerce\mollie\migrations;
 
 use Craft;
-use craft\commerce\multisafepay\gateways\Gateway;
+use craft\commerce\mollie\gateways\Gateway;
 use craft\db\Migration;
 use craft\db\Query;
 
@@ -54,7 +54,7 @@ class Install extends Migration
     {
         $gateways = (new Query())
             ->select(['id'])
-            ->where(['type' => 'craft\\commerce\\gateways\\WorldPay_Json'])
+            ->where(['type' => 'craft\\commerce\\gateways\\Mollie'])
             ->from(['{{%commerce_gateways}}'])
             ->all();
 
