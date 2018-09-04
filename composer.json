@@ -25,6 +25,7 @@
     "rss": "https://github.com/craftcms/commerce-mollie/commits/master.atom"
   },
   "require": {
+    "craftcms/cms": "^3.0.0",
     "craftcms/commerce-omnipay": "^1.0.0",
     "omnipay/mollie": "~3.0"
   },
