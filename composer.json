@@ -36,8 +36,6 @@
   },
   "extra": {
     "name": "Mollie for Craft Commerce",
-    "handle": "commerce-mollie",
-    "changelogUrl": "https://raw.githubusercontent.com/craftcms/commerce-mollie/master/CHANGELOG.md",
-    "downloadUrl": "https://github.com/craftcms/commerce-mollie/archive/master.zip"
+    "handle": "commerce-mollie"
   }
 }
