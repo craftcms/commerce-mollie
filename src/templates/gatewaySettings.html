@@ -1,10 +1,11 @@
-{% from "_includes/forms" import textField, lightswitchField %}
+{% from "_includes/forms" import autosuggestField %}
 
-{{ textField({
+{{ autosuggestField({
     label: 'API Key'|t('commerce'),
     id: 'apiKey',
     class: 'ltr',
     name: 'apiKey',
+    suggestions: craft.cp.getEnvSuggestions(),
     value: gateway.apiKey,
     errors: gateway.getErrors('apiKey')
 }) }}
