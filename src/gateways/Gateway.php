@@ -94,7 +94,7 @@ class Gateway extends OffsiteGateway
         /** @var OmnipayGateway $gateway */
         $gateway = Omnipay::create($this->getGatewayClassName());
 
-        $gateway->setApiKey($this->apiKey);
+        $gateway->setApiKey(Craft::parseEnv($this->apiKey));
 
         return $gateway;
     }

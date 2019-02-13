@@ -1,5 +1,10 @@
 # Release Notes for Mollie for Craft Commerce
 
+## Unreleased
+
+### Added
+- API Key setting can now be set to an environment variable. ([#9](https://github.com/craftcms/commerce-mollie/issues/9)) 
+
 ## 1.1.0 - 2019-01-22
 
 ### Changed
