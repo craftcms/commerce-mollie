@@ -1,7 +1,7 @@
 {
   "name": "craftcms/commerce-mollie",
   "description": "Mollie integration for Craft Commerce",
-  "version": "1.1.1",
+  "version": "2.0.0",
   "type": "craft-plugin",
   "keywords": [
     "mollie",
@@ -25,9 +25,10 @@
     "rss": "https://github.com/craftcms/commerce-mollie/commits/master.atom"
   },
   "require": {
-    "craftcms/cms": "^3.1.5",
-    "craftcms/commerce-omnipay": "^1.0.0",
-    "omnipay/mollie": "~3.0"
+    "craftcms/cms": "^3.1.0",
+    "craftcms/commerce-omnipay": "^2.0.0",
+    "omnipay/mollie": "^5.0",
+    "php-http/guzzle6-adapter": "^1.1.1"
   },
   "autoload": {
     "psr-4": {
