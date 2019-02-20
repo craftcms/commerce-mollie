@@ -6,7 +6,7 @@ This plugin provides a [Mollie](https://www.mollie.com/) integration for [Craft 
 
 ## Requirements
 
-This plugin requires Craft Commerce 2.0.0 or later.
+This plugin requires Craft 3.1.5 and Craft Commerce 2.0.0 or later.
 
 ## Installation
 
@@ -35,20 +35,4 @@ composer require craftcms/commerce-mollie
 
 To add a Mollie payment gateway, go to Commerce → Settings → Gateways, create a new gateway, and set the gateway type to “Mollie”.
 
-### Per-Environment Configuration
-
-Once you’ve added Mollie as a gateway in the Control Panel, you can override its settings with different values for each environment.
-Mollie’s API Key settings can be set to environment variables.
-
-First, add the following environment variable to your `.env` and `.env.example` files:
-
-```bash
-# Mollie's API Key
-MOLLIE_API_KEY=""
-``` 
-
-Fill in the values in your `.env` file (leaving the values in `.env.example` blank).
-
-Then when you use Mollie as gateway, you can reference this environment variable in the gateway settings by typing `$` followed by the environment variable name.
-
-Only the environment variable name will be saved to your database and `project.yaml` file, not its value.
+> **Tip:** Mollie’s API Key settings can be set to environment variables. See [Environmental Configuration](https://docs.craftcms.com/v3/config/environments.html) in the Craft docs to learn more about that.
