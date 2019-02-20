@@ -1,5 +1,10 @@
 # Release Notes for Mollie for Craft Commerce
 
+## Unreleased
+
+### Changed
+- Mollie for Craft Commerce now requires Craft 3.1.5 or later.
+
 ## 1.1.1 - 2019-02-13
 
 ### Added
