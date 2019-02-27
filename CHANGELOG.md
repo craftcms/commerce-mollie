@@ -4,6 +4,7 @@
 
 ### Changed
 - Mollie for Craft Commerce now requires Craft 3.1.5 or later.
+- Mollie for Craft Commerce now uses Omnipay v3.
 
 ## 1.1.1 - 2019-02-13
 
