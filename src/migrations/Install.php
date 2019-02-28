@@ -28,7 +28,7 @@ class Install extends Migration
      */
     public function safeUp()
     {
-        // Convert any built-in Paypal gateways to ours
+        // Convert any built-in Mollie gateways to ours
         $this->_convertGateways();
 
         return true;

@@ -9,7 +9,7 @@ use yii\base\Event;
 
 
 /**
- * Plugin represents the Stripe integration plugin.
+ * Plugin represents the Mollie integration plugin.
  *
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
  * @since  1.0
