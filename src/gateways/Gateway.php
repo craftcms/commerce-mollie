@@ -118,12 +118,17 @@ class Gateway extends OffsiteGateway
      */
     public function getPaymentFormHtml(array $params)
     {
-        $defaults = [
-            'gateway' => $this,
-            'paymentForm' => $this->getPaymentFormModel(),
-            'paymentMethods' => $this->fetchPaymentMethods(),
-            'issuers' => $this->fetchIssuers(),
-        ];
+        try {
+            $defaults = [
+                'gateway' => $this,
+                'paymentForm' => $this->getPaymentFormModel(),
+                'paymentMethods' => $this->fetchPaymentMethods(),
+                'issuers' => $this->fetchIssuers(),
+            ];
+        } catch (\Throwable $exception) {
+            // In case this is not allowed for the account
+            return parent::getPaymentFormHtml($params);
+        }
 
         $params = array_merge($defaults, $params);
 
