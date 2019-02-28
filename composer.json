@@ -26,9 +26,9 @@
   },
   "require": {
     "craftcms/cms": "^3.1.5",
+    "craftcms/commerce": "^2.0.0",
     "craftcms/commerce-omnipay": "^2.0.0",
-    "omnipay/mollie": "^5.0",
-    "php-http/guzzle6-adapter": "^1.1.1"
+    "omnipay/mollie": "^5.0"
   },
   "autoload": {
     "psr-4": {
