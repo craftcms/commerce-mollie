@@ -2,12 +2,15 @@
 
 ## Unreleased
 
+### Added
+- Added support for pre-selecting payment method.
+
 ### Changed
 - Mollie for Craft Commerce now requires Craft 3.1.5 or later.
 - Mollie for Craft Commerce now uses Omnipay v3.
 
 ### Fixed
-- Fixed a bug where HTTP 400 would sometimes be triggered. ([#7](https://github.com/craftcms/commerce-mollie/issues/7))
+- Fixed a bug where HTTP 400 would sometimes be triggered for Mollie webhooks. ([#7](https://github.com/craftcms/commerce-mollie/issues/7))
 
 ## 1.1.1 - 2019-02-13
 
