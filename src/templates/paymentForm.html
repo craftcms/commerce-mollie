@@ -1,0 +1,13 @@
+<div class="mollie-form">
+    <select name="paymentMethod">
+    {% for method in paymentMethods %}
+        <option value="{{ method.id }}">{{ method.name }}</option>
+    {% endfor %}
+    </select>
+
+    <select name="issuer">
+    {% for issuer in issuers %}
+        <option value="{{ issuer.id }}">{{ issuer.name }} - {{ issuer.paymentMethod }}</option>
+    {% endfor %}
+    </select>
+</div>
