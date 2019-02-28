@@ -54,7 +54,7 @@ class Install extends Migration
     {
         $gateways = (new Query())
             ->select(['id'])
-            ->where(['type' => 'craft\\commerce\\gateways\\WorldPay_Json'])
+            ->where(['type' => 'craft\\commerce\\gateways\\Mollie'])
             ->from(['{{%commerce_gateways}}'])
             ->all();
 
