@@ -57,6 +57,14 @@ class Gateway extends OffsiteGateway
     /**
      * @inheritdoc
      */
+    public function supportsWebhooks(): bool
+    {
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getPaymentTypeOptions(): array
     {
         return [
