@@ -12,6 +12,7 @@ use craft\commerce\base\RequestResponseInterface;
 use craft\commerce\models\payments\BasePaymentForm;
 use craft\commerce\models\Transaction;
 use craft\commerce\omnipay\base\OffsiteGateway;
+use craft\helpers\UrlHelper;
 use craft\web\View;
 use craft\commerce\mollie\models\forms\MollieOffsitePaymentForm;
 use Omnipay\Common\AbstractGateway;
@@ -85,6 +86,14 @@ class Gateway extends OffsiteGateway
     public function supportsWebhooks(): bool
     {
         return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getWebhookUrl(array $params = []): string
+    {
+        return UrlHelper::actionUrl('commerce/payments/complete-payment', $params);
     }
 
     /**
