@@ -1,6 +1,6 @@
 # Release Notes for Mollie for Craft Commerce
 
-## Unreleased
+## 2.0.0 - 2019-03-04
 
 ### Added
 - Added support for pre-selecting payment method.
@@ -15,7 +15,7 @@
 ## 1.1.1 - 2019-02-13
 
 ### Added
-- API Key setting can now be set to an environment variable. ([#9](https://github.com/craftcms/commerce-mollie/issues/9)) 
+- API Key setting can now be set to an environment variable. ([#9](https://github.com/craftcms/commerce-mollie/issues/9))
 
 ## 1.1.0 - 2019-01-22
 
