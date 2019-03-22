@@ -11,11 +11,13 @@ use Craft;
 use craft\commerce\base\RequestResponseInterface;
 use craft\commerce\models\payments\BasePaymentForm;
 use craft\commerce\models\Transaction;
+use craft\commerce\mollie\models\RequestResponse;
 use craft\commerce\omnipay\base\OffsiteGateway;
 use craft\helpers\UrlHelper;
 use craft\web\View;
 use craft\commerce\mollie\models\forms\MollieOffsitePaymentForm;
 use Omnipay\Common\AbstractGateway;
+use Omnipay\Common\Message\ResponseInterface;
 use Omnipay\Omnipay;
 use Omnipay\Mollie\Gateway as OmnipayGateway;
 use yii\base\NotSupportedException;
@@ -207,5 +209,13 @@ class Gateway extends OffsiteGateway
     protected function getGatewayClassName()
     {
         return '\\' . OmnipayGateway::class;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function prepareResponse(ResponseInterface $response, Transaction $transaction): RequestResponseInterface
+    {
+        return new RequestResponse($response, $transaction);
     }
 }

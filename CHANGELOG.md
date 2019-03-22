@@ -1,5 +1,10 @@
 # Release Notes for Mollie for Craft Commerce
 
+## Unreleased
+
+### Changed
+- The plugin now overrides the default message returned by Omnipay if the payment failed or was canceled. ([#15](https://github.com/craftcms/commerce-mollie/issues/15))
+
 ## 2.0.0 - 2019-03-04
 
 ### Added
