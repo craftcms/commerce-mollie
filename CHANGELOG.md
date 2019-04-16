@@ -7,7 +7,7 @@
 
 ## 2.0.0 - 2019-03-04
 
-### Added
+### Added
 - Added support for pre-selecting payment method.
 
 ### Changed
