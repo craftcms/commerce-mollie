@@ -13,11 +13,15 @@ use craft\commerce\models\payments\BasePaymentForm;
 use craft\commerce\models\Transaction;
 use craft\commerce\mollie\models\RequestResponse;
 use craft\commerce\omnipay\base\OffsiteGateway;
+use craft\commerce\Plugin as Commerce;
+use craft\commerce\records\Transaction as TransactionRecord;
 use craft\helpers\UrlHelper;
+use craft\web\Response;
 use craft\web\View;
 use craft\commerce\mollie\models\forms\MollieOffsitePaymentForm;
 use Omnipay\Common\AbstractGateway;
 use Omnipay\Common\Message\ResponseInterface;
+use Omnipay\Mollie\Message\Request\FetchTransactionRequest;
 use Omnipay\Omnipay;
 use Omnipay\Mollie\Gateway as OmnipayGateway;
 use yii\base\NotSupportedException;
@@ -91,11 +95,75 @@ class Gateway extends OffsiteGateway
     }
 
     /**
-     * @inheritdoc
+     * @return Response|void
+     * @throws \craft\commerce\errors\TransactionException
      */
-    public function getWebhookUrl(array $params = []): string
+    public function processWebHook(): Response
     {
-        return UrlHelper::actionUrl('commerce/payments/complete-payment', $params);
+        $response = Craft::$app->getResponse();
+
+        $transactionHash = Craft::$app->getRequest()->getParam('commerceTransactionHash');
+        $transaction = Commerce::getInstance()->getTransactions()->getTransactionByHash($transactionHash);
+
+        if (!$transaction) {
+            Craft::warning('Transaction with the hash “'.$transactionHash.'“ not found.', 'sagepay');
+            $response->data = 'ok';
+
+            return $response;
+        }
+
+        // Check to see if a successful purchase child transaction already exist and skip out early if they do
+        $successfulPurchaseChildTransaction = TransactionRecord::find()->where([
+            'parentId' => $transaction->id,
+            'status' => TransactionRecord::STATUS_SUCCESS,
+            'type' => TransactionRecord::TYPE_PURCHASE,
+        ])->one();
+
+        if ($successfulPurchaseChildTransaction) {
+            Craft::warning('Successful child transaction for “'.$transactionHash.'“ already exists.', 'commerce');
+            $response->data = 'ok';
+
+            return $response;
+        }
+
+        $id = Craft::$app->getRequest()->getBodyParam('id');
+        $gateway = $this->createGateway();
+        /** @var FetchTransactionRequest $request */
+        $request = $gateway->fetchTransaction(['transactionReference' => $id]);
+        $res = $request->send();
+
+        if (!$res->isSuccessful()) {
+            Craft::warning('Mollie request was unsuccessful.', 'commerce');
+            $response->data = 'ok';
+
+            return $response;
+        }
+
+        $childTransaction = Commerce::getInstance()->getTransactions()->createTransaction(null, $transaction);
+        $childTransaction->type = $transaction->type;
+
+        if ($res->isPaid()) {
+            $childTransaction->status = TransactionRecord::STATUS_SUCCESS;
+        } else if ($res->isExpired()) {
+            $childTransaction->status = TransactionRecord::STATUS_FAILED;
+        } else if ($res->isCancelled()) {
+            $childTransaction->status = TransactionRecord::STATUS_FAILED;
+        } else if (isset($this->data['status']) && 'failed' === $this->data['status']) {
+            $childTransaction->status = TransactionRecord::STATUS_FAILED;
+        } else {
+            $response->data = 'ok';
+            return $response;
+        }
+
+        $childTransaction->response = $res->getData();
+        $childTransaction->code = $res->getTransactionId();
+        $childTransaction->reference = $res->getTransactionReference();
+        $childTransaction->message = $res->getMessage();
+        Commerce::getInstance()->getTransactions()->saveTransaction($childTransaction);
+
+        $response->data = 'ok';
+
+        return $response;
     }
 
     /**
