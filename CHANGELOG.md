@@ -1,5 +1,10 @@
 # Release Notes for Mollie for Craft Commerce
 
+## 2.1.1 - 2020-02-02
+
+### Changed
+- Updated how the plugin handles webhook responses from mollie. ([#22](https://github.com/craftcms/commerce-mollie/issues/22))
+
 ## 2.1.0.1 - 2019-07-24
 
 ### Changed
