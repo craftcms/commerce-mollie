@@ -1,6 +1,6 @@
 {
   "name": "craftcms/commerce-mollie",
-  "description": "Mollie integration for Craft Commerce",
+  "description": "Mollie integration for Craft Commerce 2 & 3",
   "version": "2.1.1",
   "type": "craft-plugin",
   "keywords": [
