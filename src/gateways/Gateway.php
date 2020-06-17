@@ -251,6 +251,7 @@ class Gateway extends OffsiteGateway
 
     /**
      * @inheritdoc
+     * @since 2.1.2
      */
     public function getTransactionHashFromWebhook()
     {
