@@ -34,16 +34,10 @@ use yii\base\NotSupportedException;
  */
 class Gateway extends OffsiteGateway
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var string
      */
     public $apiKey;
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc
@@ -102,7 +96,7 @@ class Gateway extends OffsiteGateway
     {
         $response = Craft::$app->getResponse();
 
-        $transactionHash = Craft::$app->getRequest()->getParam('commerceTransactionHash');
+        $transactionHash = $this->getTransactionHashFromWebhook();
         $transaction = Commerce::getInstance()->getTransactions()->getTransactionByHash($transactionHash);
 
         if (!$transaction) {
@@ -117,7 +111,7 @@ class Gateway extends OffsiteGateway
             'parentId' => $transaction->id,
             'status' => TransactionRecord::STATUS_SUCCESS,
             'type' => TransactionRecord::TYPE_PURCHASE,
-        ])->one();
+        ])->count();
 
         if ($successfulPurchaseChildTransaction) {
             Craft::warning('Successful child transaction for “'.$transactionHash.'“ already exists.', 'commerce');
@@ -255,8 +249,14 @@ class Gateway extends OffsiteGateway
         return $issuersRequest->sendData($issuersRequest->getData())->getIssuers();
     }
 
-    // Protected Methods
-    // =========================================================================
+    /**
+     * @inheritdoc
+     * @since 2.1.2
+     */
+    public function getTransactionHashFromWebhook()
+    {
+        return Craft::$app->getRequest()->getParam('commerceTransactionHash');
+    }
 
     /**
      * @inheritdoc
