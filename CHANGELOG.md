@@ -1,5 +1,10 @@
 # Release Notes for Mollie for Craft Commerce
 
+## Unreleased
+
+### Added
+- Added version strings for better support integration.
+
 ## 2.1.2 - 2020-06-17
 
 ### Added
