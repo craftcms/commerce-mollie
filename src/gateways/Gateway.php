@@ -268,6 +268,17 @@ class Gateway extends OffsiteGateway
 
         $gateway->setApiKey(Craft::parseEnv($this->apiKey));
 
+        $commerceMollie = Craft::$app->getPlugins()->getPluginInfo('commerce-mollie');
+        if ($commerceMollie) {
+            $gateway->addVersionString('MollieCraftCommerce/' . $commerceMollie['version']);
+        }
+
+        $commerce = Craft::$app->getPlugins()->getPluginInfo('commerce');
+        if ($commerce) {
+            $gateway->addVersionString('CraftCommerce/' . $commerce['version']);
+        }
+        $gateway->addVersionString('uap/MvVFR6uSW5NzK8Kq');
+
         return $gateway;
     }
 
