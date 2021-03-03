@@ -100,7 +100,7 @@ class Gateway extends OffsiteGateway
         $transaction = Commerce::getInstance()->getTransactions()->getTransactionByHash($transactionHash);
 
         if (!$transaction) {
-            Craft::warning('Transaction with the hash “'.$transactionHash.'“ not found.', 'sagepay');
+            Craft::warning('Transaction with the hash “'.$transactionHash.'“ not found.', 'commerce');
             $response->data = 'ok';
 
             return $response;
@@ -267,6 +267,17 @@ class Gateway extends OffsiteGateway
         $gateway = static::createOmnipayGateway($this->getGatewayClassName());
 
         $gateway->setApiKey(Craft::parseEnv($this->apiKey));
+
+        $commerceMollie = Craft::$app->getPlugins()->getPluginInfo('commerce-mollie');
+        if ($commerceMollie) {
+            $gateway->addVersionString('MollieCraftCommerce/' . $commerceMollie['version']);
+        }
+
+        $commerce = Craft::$app->getPlugins()->getPluginInfo('commerce');
+        if ($commerce) {
+            $gateway->addVersionString('CraftCommerce/' . $commerce['version']);
+        }
+        $gateway->addVersionString('uap/MvVFR6uSW5NzK8Kq');
 
         return $gateway;
     }
