@@ -100,7 +100,7 @@ class Gateway extends OffsiteGateway
         $transaction = Commerce::getInstance()->getTransactions()->getTransactionByHash($transactionHash);
 
         if (!$transaction) {
-            Craft::warning('Transaction with the hash “'.$transactionHash.'“ not found.', 'sagepay');
+            Craft::warning('Transaction with the hash “'.$transactionHash.'“ not found.', 'commerce');
             $response->data = 'ok';
 
             return $response;
