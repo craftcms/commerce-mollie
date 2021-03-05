@@ -1,5 +1,10 @@
 # Release Notes for Mollie for Craft Commerce
 
+## Unreleased
+
+### Changed
+- Bank transfer payments with an `open`/`processing` status will now complete and order. ([#17](https://github.com/craftcms/commerce-mollie/issues/17))
+
 ## 2.1.2.1 - 2021-03-03
 
 ### Added
@@ -17,7 +22,7 @@
 
 ## 2.1.0.1 - 2019-07-24
 
-### Changed
+### Changed
 - Updated changelog with missing changes for 2.1.0
 
 ## 2.1.0 - 2019-07-24
