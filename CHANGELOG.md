@@ -1,12 +1,10 @@
 # Release Notes for Mollie for Craft Commerce
 
-## 3.0.0
+## 3.0.0 - 2021-04-20
 
 ### Changed
 - The plugin now requires Craft 3.6 and Commerce 3.3 or later.
 - The plugin now requires Guzzle 7.
-
-## Unreleased
 
 ### Changed
 - Bank transfer payments with an `open`/`processing` status will now complete and order. ([#17](https://github.com/craftcms/commerce-mollie/issues/17))
