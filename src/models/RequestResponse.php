@@ -4,6 +4,7 @@ namespace craft\commerce\mollie\models;
 
 use Craft;
 use craft\commerce\omnipay\base\RequestResponse as BaseRequestResponse;
+use Omnipay\Mollie\Message\Response\CompletePurchaseResponse;
 
 /**
  * @author    Pixel & Tonic, Inc. <support@pixelandtonic.com>
@@ -28,5 +29,33 @@ class RequestResponse extends BaseRequestResponse
         }
 
         return (string)$this->response->getMessage();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isProcessing(): bool
+    {
+        $data = $this->response->getData();
+        // @TODO Temporary solution ahead of either a PR to `omnipay-mollie` or a gateway rewrite
+        if ($this->response instanceof CompletePurchaseResponse && isset($data['method'], $data['status']) && $data['method'] === 'banktransfer' && $this->response->isOpen()) {
+            return true;
+        }
+
+        return parent::isProcessing();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isRedirect(): bool
+    {
+        $data = $this->response->getData();
+        // @TODO Temporary solution ahead of either a PR to `omnipay-mollie` or a gateway rewrite
+        if ($this->response instanceof CompletePurchaseResponse && isset($data['method']) && $data['method'] === 'banktransfer' && $this->isProcessing()) {
+            return false;
+        }
+
+        return parent::isRedirect();
     }
 }
