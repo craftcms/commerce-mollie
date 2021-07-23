@@ -20,9 +20,6 @@ use craft\db\Query;
  */
 class Install extends Migration
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -41,9 +38,6 @@ class Install extends Migration
     {
         return true;
     }
-
-    // Private Methods
-    // =========================================================================
 
     /**
      * Converts any old school Mollie gateways to this one
