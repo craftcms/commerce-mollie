@@ -9,12 +9,14 @@ namespace craft\commerce\mollie\gateways;
 
 use Craft;
 use craft\commerce\base\RequestResponseInterface;
+use craft\commerce\controllers\PaymentsController;
 use craft\commerce\models\payments\BasePaymentForm;
 use craft\commerce\models\Transaction;
 use craft\commerce\mollie\models\RequestResponse;
 use craft\commerce\omnipay\base\OffsiteGateway;
 use craft\commerce\Plugin as Commerce;
 use craft\commerce\records\Transaction as TransactionRecord;
+use craft\helpers\Html;
 use craft\helpers\UrlHelper;
 use craft\web\Response;
 use craft\web\View;
@@ -219,6 +221,8 @@ class Gateway extends OffsiteGateway
         $view->setTemplateMode(View::TEMPLATE_MODE_CP);
 
         $html = $view->renderTemplate('commerce-mollie/paymentForm', $params);
+        $html = Html::namespaceInputs($html, sprintf('%s[%s]', PaymentsController::PAYMENT_FORM_NAMESPACE, $this->handle));
+
         $view->setTemplateMode($previousMode);
 
         return $html;
