@@ -11,7 +11,13 @@ use craft\commerce\models\payments\BasePaymentForm;
 
 class MollieOffsitePaymentForm extends BasePaymentForm
 {
-    public $paymentMethod;
+    /**
+     * @var string|null
+     */
+    public ?string $paymentMethod = null;
 
-    public $issuer;
+    /**
+     * @var string|null
+     */
+    public ?string $issuer = null;
 }

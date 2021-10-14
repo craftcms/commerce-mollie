@@ -31,27 +31,29 @@ use yii\base\NotSupportedException;
  *
  * @author    Pixel & Tonic, Inc. <support@pixelandtonic.com>
  * @since     1.0
+ *
+ * @property-read null|string $settingsHtml
  */
 class Gateway extends OffsiteGateway
 {
     /**
-     * @var string
+     * @var string|null
      */
-    public $apiKey;
+    public ?string $apiKey = null;
 
     /**
      * @inheritdoc
      */
-    public function populateRequest(array &$request, BasePaymentForm $paymentForm = null)
+    public function populateRequest(array &$request, BasePaymentForm $form = null): void
     {
-        if ($paymentForm) {
-            /** @var MollieOffsitePaymentForm $paymentForm */
-            if ($paymentForm->paymentMethod) {
-                $request['paymentMethod'] = $paymentForm->paymentMethod;
+        if ($form) {
+            /** @var MollieOffsitePaymentForm $form */
+            if ($form->paymentMethod) {
+                $request['paymentMethod'] = $form->paymentMethod;
             }
 
-            if ($paymentForm->issuer) {
-                $request['issuer'] = $paymentForm->issuer;
+            if ($form->issuer) {
+                $request['issuer'] = $form->issuer;
             }
         }
     }
@@ -90,7 +92,13 @@ class Gateway extends OffsiteGateway
 
     /**
      * @return Response|void
+     * @throws \Throwable
+     * @throws \craft\commerce\errors\CurrencyException
+     * @throws \craft\commerce\errors\OrderStatusException
      * @throws \craft\commerce\errors\TransactionException
+     * @throws \craft\errors\ElementNotFoundException
+     * @throws \yii\base\Exception
+     * @throws \yii\base\InvalidConfigException
      */
     public function processWebHook(): Response
     {
@@ -173,7 +181,7 @@ class Gateway extends OffsiteGateway
     /**
      * @inheritdoc
      */
-    public function getSettingsHtml()
+    public function getSettingsHtml(): ?string
     {
         return Craft::$app->getView()->renderTemplate('commerce-mollie/gatewaySettings', ['gateway' => $this]);
     }
@@ -189,7 +197,7 @@ class Gateway extends OffsiteGateway
     /**
      * @inheritdoc
      */
-    public function getPaymentFormHtml(array $params)
+    public function getPaymentFormHtml(array $params): ?string
     {
         try {
             $defaults = [
@@ -219,7 +227,7 @@ class Gateway extends OffsiteGateway
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         $rules = parent::rules();
         $rules[] = ['paymentType', 'compare', 'compareValue' => 'purchase'];
@@ -253,7 +261,7 @@ class Gateway extends OffsiteGateway
      * @inheritdoc
      * @since 2.1.2
      */
-    public function getTransactionHashFromWebhook()
+    public function getTransactionHashFromWebhook(): ?string
     {
         return Craft::$app->getRequest()->getParam('commerceTransactionHash');
     }
@@ -285,16 +293,8 @@ class Gateway extends OffsiteGateway
     /**
      * @inheritdoc
      */
-    protected function getGatewayClassName()
+    protected function getGatewayClassName(): ?string
     {
         return '\\' . OmnipayGateway::class;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function prepareResponse(ResponseInterface $response, Transaction $transaction): RequestResponseInterface
-    {
-        return new RequestResponse($response, $transaction);
     }
 }
