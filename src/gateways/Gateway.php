@@ -9,21 +9,29 @@ namespace craft\commerce\mollie\gateways;
 
 use Craft;
 use craft\commerce\base\RequestResponseInterface;
+use craft\commerce\errors\CurrencyException;
+use craft\commerce\errors\OrderStatusException;
+use craft\commerce\errors\TransactionException;
 use craft\commerce\models\payments\BasePaymentForm;
 use craft\commerce\models\Transaction;
 use craft\commerce\mollie\models\RequestResponse;
 use craft\commerce\omnipay\base\OffsiteGateway;
 use craft\commerce\Plugin as Commerce;
 use craft\commerce\records\Transaction as TransactionRecord;
-use craft\helpers\UrlHelper;
+use craft\errors\ElementNotFoundException;
 use craft\web\Response;
 use craft\web\View;
 use craft\commerce\mollie\models\forms\MollieOffsitePaymentForm;
 use Omnipay\Common\AbstractGateway;
+use Omnipay\Common\Exception\InvalidRequestException;
+use Omnipay\Common\Issuer;
 use Omnipay\Common\Message\ResponseInterface;
+use Omnipay\Common\PaymentMethod;
 use Omnipay\Mollie\Message\Request\FetchTransactionRequest;
-use Omnipay\Omnipay;
 use Omnipay\Mollie\Gateway as OmnipayGateway;
+use Omnipay\Mollie\Message\Response\FetchPaymentMethodsResponse;
+use yii\base\Exception;
+use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
 
 /**
@@ -89,8 +97,14 @@ class Gateway extends OffsiteGateway
     }
 
     /**
-     * @return Response|void
-     * @throws \craft\commerce\errors\TransactionException
+     * @return Response
+     * @throws \Throwable
+     * @throws CurrencyException
+     * @throws OrderStatusException
+     * @throws TransactionException
+     * @throws ElementNotFoundException
+     * @throws Exception
+     * @throws InvalidConfigException
      */
     public function processWebHook(): Response
     {
@@ -229,22 +243,31 @@ class Gateway extends OffsiteGateway
 
     /**
      * @param array $parameters
-     * @return mixed
+     * @return PaymentMethod[]
+     * @throws InvalidRequestException
      */
     public function fetchPaymentMethods(array $parameters = [])
     {
-        $paymentMethodsRequest = $this->createGateway()->fetchPaymentMethods($parameters);
+        /** @var OmnipayGateway $gateway */
+        $gateway = $this->createGateway();
 
-        return $paymentMethodsRequest->sendData($paymentMethodsRequest->getData())->getPaymentMethods();
+        $paymentMethodsRequest = $gateway->fetchPaymentMethods($parameters);
+        /** @var FetchPaymentMethodsResponse $response */
+        $response = $paymentMethodsRequest->sendData($paymentMethodsRequest->getData());
+
+        return $response->getPaymentMethods();
     }
 
     /**
      * @param array $parameters
-     * @return mixed
+     * @return Issuer[]
+     * @throws InvalidRequestException
      */
     public function fetchIssuers(array $parameters = [])
     {
-        $issuersRequest = $this->createGateway()->fetchIssuers($parameters);
+        /** @var OmnipayGateway $gateway */
+        $gateway = $this->createGateway();
+        $issuersRequest = $gateway->fetchIssuers($parameters);
 
         return $issuersRequest->sendData($issuersRequest->getData())->getIssuers();
     }
