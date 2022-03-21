@@ -221,7 +221,6 @@ class Gateway extends OffsiteGateway
         $view->setTemplateMode(View::TEMPLATE_MODE_CP);
 
         $html = $view->renderTemplate('commerce-mollie/paymentForm', $params);
-        $html = Html::namespaceInputs($html, sprintf('%s[%s]', PaymentsController::PAYMENT_FORM_NAMESPACE, $this->handle));
 
         $view->setTemplateMode($previousMode);
 
