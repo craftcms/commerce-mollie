@@ -142,7 +142,7 @@ class Gateway extends OffsiteGateway
             $childTransaction->status = TransactionRecord::STATUS_FAILED;
         } else if ($res->isCancelled()) {
             $childTransaction->status = TransactionRecord::STATUS_FAILED;
-        } else if (isset($this->data['status']) && 'failed' === $this->data['status']) {
+        } else if (isset($res->getData()['status']) && 'failed' === $res->getData()['status']) {
             $childTransaction->status = TransactionRecord::STATUS_FAILED;
         } else {
             $response->data = 'ok';

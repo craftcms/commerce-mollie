@@ -1,5 +1,10 @@
 # Release Notes for Mollie for Craft Commerce
 
+## Unreleased
+
+### Fixed
+- Fixed an error that could occur when processing a webhook.
+
 ## 3.0.0 - 2021-04-20
 
 ### Changed
