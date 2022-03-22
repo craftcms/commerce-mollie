@@ -6,7 +6,7 @@ This plugin provides a [Mollie](https://www.mollie.com/) integration for [Craft 
 
 ## Requirements
 
-This plugin requires Craft 3.1.5 and Craft Commerce 2.0.0 or later.
+This plugin requires Craft 3.6 and Craft Commerce 3.3 or later.
 
 ## Installation
 

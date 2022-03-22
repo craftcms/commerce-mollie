@@ -20,9 +20,6 @@ use craft\db\Query;
  */
 class Install extends Migration
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -42,9 +39,6 @@ class Install extends Migration
         return true;
     }
 
-    // Private Methods
-    // =========================================================================
-
     /**
      * Converts any old school Mollie gateways to this one
      *
@@ -61,7 +55,6 @@ class Install extends Migration
         $dbConnection = Craft::$app->getDb();
 
         foreach ($gateways as $gateway) {
-
             $values = [
                 'type' => Gateway::class,
             ];
@@ -70,6 +63,5 @@ class Install extends Migration
                 ->update('{{%commerce_gateways}}', $values, ['id' => $gateway['id']])
                 ->execute();
         }
-
     }
 }

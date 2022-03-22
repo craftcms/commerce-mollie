@@ -1,7 +1,7 @@
 {
   "name": "craftcms/commerce-mollie",
-  "description": "Mollie integration for Craft Commerce 2 & 3",
-  "version": "2.1.2.1",
+  "description": "Mollie integration for Craft Commerce 3.3+",
+  "version": "3.0.1",
   "type": "craft-plugin",
   "keywords": [
     "mollie",
@@ -25,9 +25,9 @@
     "rss": "https://github.com/craftcms/commerce-mollie/commits/master.atom"
   },
   "require": {
-    "craftcms/cms": "^3.1.5",
-    "craftcms/commerce": "^2.0|^3.0",
-    "craftcms/commerce-omnipay": "^2.0.0",
+    "craftcms/cms": "^3.6",
+    "craftcms/commerce": "^3.3",
+    "craftcms/commerce-omnipay": "^3.0",
     "omnipay/mollie": "^5.0"
   },
   "autoload": {
@@ -38,5 +38,22 @@
   "extra": {
     "name": "Mollie for Craft Commerce",
     "handle": "commerce-mollie"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "require-dev": {
+    "craftcms/phpstan": "dev-main",
+    "craftcms/ecs": "dev-main"
+  },
+  "scripts": {
+    "phpstan": "phpstan --memory-limit=1G",
+    "check-cs": "ecs check --ansi",
+    "fix-cs": "ecs check --ansi --fix"
+  },
+  "config": {
+    "allow-plugins": {
+      "yiisoft/yii2-composer": true,
+      "craftcms/plugin-installer": true
+    }
   }
 }
