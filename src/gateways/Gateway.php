@@ -14,6 +14,7 @@ use craft\commerce\errors\OrderStatusException;
 use craft\commerce\errors\TransactionException;
 use craft\commerce\models\payments\BasePaymentForm;
 use craft\commerce\models\Transaction;
+use craft\commerce\mollie\models\forms\MollieOffsitePaymentForm;
 use craft\commerce\mollie\models\RequestResponse;
 use craft\commerce\omnipay\base\OffsiteGateway;
 use craft\commerce\Plugin as Commerce;
@@ -21,14 +22,13 @@ use craft\commerce\records\Transaction as TransactionRecord;
 use craft\errors\ElementNotFoundException;
 use craft\web\Response;
 use craft\web\View;
-use craft\commerce\mollie\models\forms\MollieOffsitePaymentForm;
 use Omnipay\Common\AbstractGateway;
 use Omnipay\Common\Exception\InvalidRequestException;
 use Omnipay\Common\Issuer;
 use Omnipay\Common\Message\ResponseInterface;
 use Omnipay\Common\PaymentMethod;
-use Omnipay\Mollie\Message\Request\FetchTransactionRequest;
 use Omnipay\Mollie\Gateway as OmnipayGateway;
+use Omnipay\Mollie\Message\Request\FetchTransactionRequest;
 use Omnipay\Mollie\Message\Response\FetchPaymentMethodsResponse;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
@@ -114,7 +114,7 @@ class Gateway extends OffsiteGateway
         $transaction = Commerce::getInstance()->getTransactions()->getTransactionByHash($transactionHash);
 
         if (!$transaction) {
-            Craft::warning('Transaction with the hash “'.$transactionHash.'“ not found.', 'commerce');
+            Craft::warning('Transaction with the hash “' . $transactionHash . '“ not found.', 'commerce');
             $response->data = 'ok';
 
             return $response;
@@ -128,7 +128,7 @@ class Gateway extends OffsiteGateway
         ])->count();
 
         if ($successfulPurchaseChildTransaction) {
-            Craft::warning('Successful child transaction for “'.$transactionHash.'“ already exists.', 'commerce');
+            Craft::warning('Successful child transaction for “' . $transactionHash . '“ already exists.', 'commerce');
             $response->data = 'ok';
 
             return $response;
@@ -152,11 +152,11 @@ class Gateway extends OffsiteGateway
 
         if ($res->isPaid()) {
             $childTransaction->status = TransactionRecord::STATUS_SUCCESS;
-        } else if ($res->isExpired()) {
+        } elseif ($res->isExpired()) {
             $childTransaction->status = TransactionRecord::STATUS_FAILED;
-        } else if ($res->isCancelled()) {
+        } elseif ($res->isCancelled()) {
             $childTransaction->status = TransactionRecord::STATUS_FAILED;
-        } else if (isset($res->getData()['status']) && 'failed' === $res->getData()['status']) {
+        } elseif (isset($res->getData()['status']) && 'failed' === $res->getData()['status']) {
             $childTransaction->status = TransactionRecord::STATUS_FAILED;
         } else {
             $response->data = 'ok';
@@ -180,7 +180,7 @@ class Gateway extends OffsiteGateway
     public function getPaymentTypeOptions(): array
     {
         return [
-            'purchase' => Craft::t('commerce', 'Purchase (Authorize and Capture Immediately)')
+            'purchase' => Craft::t('commerce', 'Purchase (Authorize and Capture Immediately)'),
         ];
     }
 

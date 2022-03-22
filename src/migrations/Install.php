@@ -55,7 +55,6 @@ class Install extends Migration
         $dbConnection = Craft::$app->getDb();
 
         foreach ($gateways as $gateway) {
-
             $values = [
                 'type' => Gateway::class,
             ];
@@ -64,6 +63,5 @@ class Install extends Migration
                 ->update('{{%commerce_gateways}}', $values, ['id' => $gateway['id']])
                 ->execute();
         }
-
     }
 }
