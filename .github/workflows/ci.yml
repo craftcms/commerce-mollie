@@ -2,9 +2,9 @@ name: PHP Checks
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ develop, commerce4 ]
   pull_request:
-    branches: [ develop ]
+    branches: [ develop, commerce4 ]
 
 jobs:
   build:
@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         operating-system: [ 'ubuntu-latest' ]
-        php-versions: [ 8.1, 8.0, 7.4, 7.3, 7.2 ]
+        php-versions: [ 8.1, 8.0 ]
 
     name: PHP ${{ matrix.php-versions }}
     env:
