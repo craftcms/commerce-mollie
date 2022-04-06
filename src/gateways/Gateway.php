@@ -50,16 +50,16 @@ class Gateway extends OffsiteGateway
     /**
      * @inheritdoc
      */
-    public function populateRequest(array &$request, BasePaymentForm $form = null): void
+    public function populateRequest(array &$request, BasePaymentForm $paymentForm = null): void
     {
-        if ($form) {
-            /** @var MollieOffsitePaymentForm $form */
-            if ($form->paymentMethod) {
-                $request['paymentMethod'] = $form->paymentMethod;
+        if ($paymentForm) {
+            /** @var MollieOffsitePaymentForm $paymentForm */
+            if ($paymentForm->paymentMethod) {
+                $request['paymentMethod'] = $paymentForm->paymentMethod;
             }
 
-            if ($form->issuer) {
-                $request['issuer'] = $form->issuer;
+            if ($paymentForm->issuer) {
+                $request['issuer'] = $paymentForm->issuer;
             }
         }
     }
