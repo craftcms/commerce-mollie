@@ -19,6 +19,7 @@ use craft\commerce\omnipay\base\OffsiteGateway;
 use craft\commerce\Plugin as Commerce;
 use craft\commerce\records\Transaction as TransactionRecord;
 use craft\errors\ElementNotFoundException;
+use craft\helpers\App;
 use craft\web\Response;
 use craft\web\View;
 use Omnipay\Common\AbstractGateway;
@@ -38,6 +39,7 @@ use yii\base\NotSupportedException;
  * @author    Pixel & Tonic, Inc. <support@pixelandtonic.com>
  * @since     1.0
  *
+ * @property bool $apiKey
  * @property-read null|string $settingsHtml
  */
 class Gateway extends OffsiteGateway
@@ -45,7 +47,38 @@ class Gateway extends OffsiteGateway
     /**
      * @var string|null
      */
-    public ?string $apiKey = null;
+    private ?string $_apiKey = null;
+
+    /**
+     * @inheritdoc
+     */
+    public function getSettings(): array
+    {
+        $settings = parent::getSettings();
+        $settings['apiKey'] = $this->getApiKey(false);
+
+        return $settings;
+    }
+
+    /**
+     * @param bool $parse
+     * @return string|null
+     * @since 4.0.0
+     */
+    public function getApiKey(bool $parse = true): ?string
+    {
+        return $parse ? App::parseEnv($this->_apiKey) : $this->_apiKey;
+    }
+
+    /**
+     * @param string|null $apiKey
+     * @return void
+     * @since 4.0.0
+     */
+    public function setApiKey(?string $apiKey): void
+    {
+        $this->_apiKey = $apiKey;
+    }
 
     /**
      * @inheritdoc
@@ -290,7 +323,7 @@ class Gateway extends OffsiteGateway
         /** @var OmnipayGateway $gateway */
         $gateway = static::createOmnipayGateway($this->getGatewayClassName());
 
-        $gateway->setApiKey(Craft::parseEnv($this->apiKey));
+        $gateway->setApiKey($this->getApiKey());
 
         $commerceMollie = Craft::$app->getPlugins()->getPluginInfo('commerce-mollie');
         if ($commerceMollie) {
