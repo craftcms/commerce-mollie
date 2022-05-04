@@ -15,17 +15,16 @@ use craft\commerce\errors\TransactionException;
 use craft\commerce\models\payments\BasePaymentForm;
 use craft\commerce\models\Transaction;
 use craft\commerce\mollie\models\forms\MollieOffsitePaymentForm;
-use craft\commerce\mollie\models\RequestResponse;
 use craft\commerce\omnipay\base\OffsiteGateway;
 use craft\commerce\Plugin as Commerce;
 use craft\commerce\records\Transaction as TransactionRecord;
 use craft\errors\ElementNotFoundException;
+use craft\helpers\App;
 use craft\web\Response;
 use craft\web\View;
 use Omnipay\Common\AbstractGateway;
 use Omnipay\Common\Exception\InvalidRequestException;
 use Omnipay\Common\Issuer;
-use Omnipay\Common\Message\ResponseInterface;
 use Omnipay\Common\PaymentMethod;
 use Omnipay\Mollie\Gateway as OmnipayGateway;
 use Omnipay\Mollie\Message\Request\FetchTransactionRequest;
@@ -39,18 +38,52 @@ use yii\base\NotSupportedException;
  *
  * @author    Pixel & Tonic, Inc. <support@pixelandtonic.com>
  * @since     1.0
+ *
+ * @property bool $apiKey
+ * @property-read null|string $settingsHtml
  */
 class Gateway extends OffsiteGateway
 {
     /**
-     * @var string
+     * @var string|null
      */
-    public $apiKey;
+    private ?string $_apiKey = null;
 
     /**
      * @inheritdoc
      */
-    public function populateRequest(array &$request, BasePaymentForm $paymentForm = null)
+    public function getSettings(): array
+    {
+        $settings = parent::getSettings();
+        $settings['apiKey'] = $this->getApiKey(false);
+
+        return $settings;
+    }
+
+    /**
+     * @param bool $parse
+     * @return string|null
+     * @since 4.0.0
+     */
+    public function getApiKey(bool $parse = true): ?string
+    {
+        return $parse ? App::parseEnv($this->_apiKey) : $this->_apiKey;
+    }
+
+    /**
+     * @param string|null $apiKey
+     * @return void
+     * @since 4.0.0
+     */
+    public function setApiKey(?string $apiKey): void
+    {
+        $this->_apiKey = $apiKey;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function populateRequest(array &$request, BasePaymentForm $paymentForm = null): void
     {
         if ($paymentForm) {
             /** @var MollieOffsitePaymentForm $paymentForm */
@@ -187,7 +220,7 @@ class Gateway extends OffsiteGateway
     /**
      * @inheritdoc
      */
-    public function getSettingsHtml()
+    public function getSettingsHtml(): ?string
     {
         return Craft::$app->getView()->renderTemplate('commerce-mollie/gatewaySettings', ['gateway' => $this]);
     }
@@ -203,7 +236,7 @@ class Gateway extends OffsiteGateway
     /**
      * @inheritdoc
      */
-    public function getPaymentFormHtml(array $params)
+    public function getPaymentFormHtml(array $params): ?string
     {
         try {
             $defaults = [
@@ -225,6 +258,7 @@ class Gateway extends OffsiteGateway
         $view->setTemplateMode(View::TEMPLATE_MODE_CP);
 
         $html = $view->renderTemplate('commerce-mollie/paymentForm', $params);
+
         $view->setTemplateMode($previousMode);
 
         return $html;
@@ -233,7 +267,7 @@ class Gateway extends OffsiteGateway
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         $rules = parent::rules();
         $rules[] = ['paymentType', 'compare', 'compareValue' => 'purchase'];
@@ -276,7 +310,7 @@ class Gateway extends OffsiteGateway
      * @inheritdoc
      * @since 2.1.2
      */
-    public function getTransactionHashFromWebhook()
+    public function getTransactionHashFromWebhook(): ?string
     {
         return Craft::$app->getRequest()->getParam('commerceTransactionHash');
     }
@@ -289,7 +323,7 @@ class Gateway extends OffsiteGateway
         /** @var OmnipayGateway $gateway */
         $gateway = static::createOmnipayGateway($this->getGatewayClassName());
 
-        $gateway->setApiKey(Craft::parseEnv($this->apiKey));
+        $gateway->setApiKey($this->getApiKey());
 
         $commerceMollie = Craft::$app->getPlugins()->getPluginInfo('commerce-mollie');
         if ($commerceMollie) {
@@ -308,16 +342,8 @@ class Gateway extends OffsiteGateway
     /**
      * @inheritdoc
      */
-    protected function getGatewayClassName()
+    protected function getGatewayClassName(): ?string
     {
         return '\\' . OmnipayGateway::class;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function prepareResponse(ResponseInterface $response, Transaction $transaction): RequestResponseInterface
-    {
-        return new RequestResponse($response, $transaction);
     }
 }
