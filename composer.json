@@ -24,9 +24,10 @@
     "rss": "https://github.com/craftcms/commerce-mollie/commits/master.atom"
   },
   "require": {
-    "craftcms/cms": "^4.0.0-beta.4",
-    "craftcms/commerce": "^4.0.0-beta.2",
-    "craftcms/commerce-omnipay": "^4.0.0-beta.2",
+    "php": "^8.0.2",
+    "craftcms/cms": "^4.0.0-RC3",
+    "craftcms/commerce": "^4.0.0-RC1",
+    "craftcms/commerce-omnipay": "^4.0.0-RC1",
     "omnipay/mollie": "^5.0"
   },
   "autoload": {
@@ -53,6 +54,9 @@
     "allow-plugins": {
       "yiisoft/yii2-composer": true,
       "craftcms/plugin-installer": true
+    },
+    "platform": {
+      "php": "8.0.2"
     }
   }
 }
