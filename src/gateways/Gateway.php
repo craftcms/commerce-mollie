@@ -15,6 +15,7 @@ use craft\commerce\errors\TransactionException;
 use craft\commerce\models\payments\BasePaymentForm;
 use craft\commerce\models\Transaction;
 use craft\commerce\mollie\models\forms\MollieOffsitePaymentForm;
+use craft\commerce\mollie\models\RequestResponse;
 use craft\commerce\omnipay\base\OffsiteGateway;
 use craft\commerce\Plugin as Commerce;
 use craft\commerce\records\Transaction as TransactionRecord;
@@ -25,6 +26,8 @@ use craft\web\View;
 use Omnipay\Common\AbstractGateway;
 use Omnipay\Common\Exception\InvalidRequestException;
 use Omnipay\Common\Issuer;
+use Omnipay\Common\Message\AbstractResponse;
+use Omnipay\Common\Message\ResponseInterface;
 use Omnipay\Common\PaymentMethod;
 use Omnipay\Mollie\Gateway as OmnipayGateway;
 use Omnipay\Mollie\Message\Request\FetchTransactionRequest;
@@ -345,5 +348,14 @@ class Gateway extends OffsiteGateway
     protected function getGatewayClassName(): ?string
     {
         return '\\' . OmnipayGateway::class;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function prepareResponse(ResponseInterface $response, Transaction $transaction): RequestResponseInterface
+    {
+        /** @var AbstractResponse $response */
+        return new RequestResponse($response, $transaction);
     }
 }

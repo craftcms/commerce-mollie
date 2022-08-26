@@ -1,5 +1,10 @@
 # Release Notes for Mollie for Craft Commerce
 
+## 4.0.1 - 2022-08-26
+
+### Fixed
+- Fixed a bug where the gateway was using the incorrect `RequestResponse` class.
+
 ## 4.0.0 - 2022-05-04
 
 ### Added
