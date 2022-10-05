@@ -306,7 +306,12 @@ class Gateway extends OffsiteGateway
         $gateway = $this->createGateway();
         $issuersRequest = $gateway->fetchIssuers($parameters);
 
-        return $issuersRequest->sendData($issuersRequest->getData())->getIssuers();
+        try {
+            return $issuersRequest->sendData($issuersRequest->getData())->getIssuers();
+        } catch (\Omnipay\Common\Http\Exception\RequestException $exception) {
+            // Return an empty array of issuers when Mollie has no issuers for your configuration.
+            return [];
+        }
     }
 
     /**
