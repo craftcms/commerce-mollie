@@ -1,5 +1,35 @@
 # Release Notes for Mollie for Craft Commerce
 
+## 4.0.1 - 2022-08-26
+
+### Fixed
+- Fixed a bug where the gateway was using the incorrect `RequestResponse` class.
+
+## 4.0.0 - 2022-05-04
+
+### Added
+- Added Craft CMS 4 and Craft Commerce 4 compatibility.
+- All gateway settings now support environment variables.
+
+## 3.0.1 - 2022-03-22
+
+### Fixed
+- Fixed a PHP error that could occur when processing a webhook.
+
+## 3.0.0 - 2021-04-20
+
+### Changed
+- The plugin now requires Craft 3.6 and Commerce 3.3 or later.
+- The plugin now requires Guzzle 7.
+
+### Changed
+- Bank transfer payments with an `open`/`processing` status will now complete and order. ([#17](https://github.com/craftcms/commerce-mollie/issues/17))
+
+## 2.1.2.1 - 2021-03-03
+
+### Added
+- Added version strings for better support integration.
+
 ## 2.1.2 - 2020-06-17
 
 ### Added
@@ -12,7 +42,7 @@
 
 ## 2.1.0.1 - 2019-07-24
 
-### Changed
+### Changed
 - Updated changelog with missing changes for 2.1.0
 
 ## 2.1.0 - 2019-07-24

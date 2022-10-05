@@ -11,6 +11,7 @@ use Craft;
 use craft\commerce\mollie\gateways\Gateway;
 use craft\db\Migration;
 use craft\db\Query;
+use yii\db\Exception;
 
 /**
  * Installation Migration
@@ -20,13 +21,10 @@ use craft\db\Query;
  */
 class Install extends Migration
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
-    public function safeUp()
+    public function safeUp(): bool
     {
         // Convert any built-in Mollie gateways to ours
         $this->_convertGateways();
@@ -37,20 +35,18 @@ class Install extends Migration
     /**
      * @inheritdoc
      */
-    public function safeDown()
+    public function safeDown(): bool
     {
         return true;
     }
-
-    // Private Methods
-    // =========================================================================
 
     /**
      * Converts any old school Mollie gateways to this one
      *
      * @return void
+     * @throws Exception
      */
-    private function _convertGateways()
+    private function _convertGateways(): void
     {
         $gateways = (new Query())
             ->select(['id'])
@@ -61,7 +57,6 @@ class Install extends Migration
         $dbConnection = Craft::$app->getDb();
 
         foreach ($gateways as $gateway) {
-
             $values = [
                 'type' => Gateway::class,
             ];
@@ -70,6 +65,5 @@ class Install extends Migration
                 ->update('{{%commerce_gateways}}', $values, ['id' => $gateway['id']])
                 ->execute();
         }
-
     }
 }
