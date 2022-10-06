@@ -11,6 +11,11 @@
 - Added Craft CMS 4 and Craft Commerce 4 compatibility.
 - All gateway settings now support environment variables.
 
+## 3.0.2 - 2022-10-06
+
+### Fixed
+- Fixed a bug where expired payments weren’t showing a human-readable error message. ([#37](https://github.com/craftcms/commerce-mollie/issues/37))
+
 ## 3.0.1 - 2022-03-22
 
 ### Fixed
