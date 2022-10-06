@@ -25,6 +25,8 @@ class RequestResponse extends BaseRequestResponse
                     return Craft::t('commerce-mollie', 'The payment was canceled.');
                 case 'failed':
                     return Craft::t('commerce-mollie', 'The payment failed.');
+                case 'expired':
+                    return Craft::t('commerce-mollie', 'The payment expired.');
             }
         }
 
