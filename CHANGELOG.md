@@ -1,5 +1,13 @@
 # Release Notes for Mollie for Craft Commerce
 
+## 4.1.0 - 2022-10-07
+
+### Changed
+- Mollie for Craft Commerce now supports other payment methods that have issuers. ([#33](https://github.com/craftcms/commerce-mollie/issues/33))
+
+### Fixed
+- Fixed a bug where expired payments weren’t showing a human-readable error message. ([#37](https://github.com/craftcms/commerce-mollie/issues/37))
+
 ## 4.0.1 - 2022-08-26
 
 ### Fixed
@@ -10,6 +18,11 @@
 ### Added
 - Added Craft CMS 4 and Craft Commerce 4 compatibility.
 - All gateway settings now support environment variables.
+
+## 3.0.2 - 2022-10-06
+
+### Fixed
+- Fixed a bug where expired payments weren’t showing a human-readable error message. ([#37](https://github.com/craftcms/commerce-mollie/issues/37))
 
 ## 3.0.1 - 2022-03-22
 

@@ -21,6 +21,7 @@ use craft\commerce\Plugin as Commerce;
 use craft\commerce\records\Transaction as TransactionRecord;
 use craft\errors\ElementNotFoundException;
 use craft\helpers\App;
+use craft\helpers\ArrayHelper;
 use craft\web\Response;
 use craft\web\View;
 use Omnipay\Common\AbstractGateway;
@@ -51,6 +52,16 @@ class Gateway extends OffsiteGateway
      * @var string|null
      */
     private ?string $_apiKey = null;
+
+    /**
+     * @var array|null
+     */
+    private ?array $_paymentMethods = null;
+
+    /**
+     * @var array|null
+     */
+    private ?array $_issuers = null;
 
     /**
      * @inheritdoc
@@ -253,6 +264,8 @@ class Gateway extends OffsiteGateway
             return parent::getPaymentFormHtml($params);
         }
 
+        $defaults['paymentMethodNamesById'] = ArrayHelper::map($defaults['paymentMethods'], static fn($pm) => $pm->getId(), static fn($pm) => $pm->getName());
+
         $params = array_merge($defaults, $params);
 
         $view = Craft::$app->getView();
@@ -285,14 +298,34 @@ class Gateway extends OffsiteGateway
      */
     public function fetchPaymentMethods(array $parameters = [])
     {
+        if ($this->_paymentMethods !== null) {
+            return $this->_paymentMethods;
+        }
         /** @var OmnipayGateway $gateway */
         $gateway = $this->createGateway();
 
         $paymentMethodsRequest = $gateway->fetchPaymentMethods($parameters);
         /** @var FetchPaymentMethodsResponse $response */
-        $response = $paymentMethodsRequest->sendData($paymentMethodsRequest->getData());
+        $response = $paymentMethodsRequest->sendData(array_merge($paymentMethodsRequest->getData(), ['include' => 'issuers']));
 
-        return $response->getPaymentMethods();
+        if (!empty($response->getData()) && isset($response->getData()['_embedded']['methods'])) {
+            $this->_issuers = [];
+            foreach ($response->getData()['_embedded']['methods'] as $method) {
+                if (empty($method['issuers'])) {
+                    continue;
+                }
+
+                $issuers = collect($method['issuers'])
+                    ->map(function($issuer) use ($method) {
+                        return new Issuer($issuer['id'], $issuer['name'], $method['id']);
+                    })
+                    ->all();
+                $this->_issuers = [...$this->_issuers, ...$issuers];
+            }
+        }
+
+        $this->_paymentMethods = $response->getPaymentMethods();
+        return $this->_paymentMethods;
     }
 
     /**
@@ -302,11 +335,16 @@ class Gateway extends OffsiteGateway
      */
     public function fetchIssuers(array $parameters = [])
     {
-        /** @var OmnipayGateway $gateway */
-        $gateway = $this->createGateway();
-        $issuersRequest = $gateway->fetchIssuers($parameters);
+        if ($this->_issuers !== null) {
+            return $this->_issuers;
+        }
 
-        return $issuersRequest->sendData($issuersRequest->getData())->getIssuers();
+        $this->_issuers = [];
+
+        // `$_issuers` gets updated as part of the payment methods fetch
+        $this->fetchPaymentMethods($parameters);
+
+        return $this->_issuers;
     }
 
     /**
