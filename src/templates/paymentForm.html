@@ -7,8 +7,12 @@
 
   {% if issuers|length %}
       <select name="issuer">
-      {% for issuer in issuers %}
-        <option value="{{ issuer.id }}">{{ issuer.name }} - {{ issuer.paymentMethod }}</option>
+      {% for paymentMethod, paymentMethodIssuers in issuers|group(i => i.paymentMethod) %}
+        <optgroup label="{{ paymentMethodNamesById is defined ? paymentMethodNamesById[paymentMethod] ?? paymentMethod : paymentMethod }}">
+          {% for issuer in paymentMethodIssuers %}
+            <option value="{{ issuer.id }}">{{ issuer.name }}</option>
+          {% endfor %}
+        </optgroup>
       {% endfor %}
       </select>
   {% endif %}
