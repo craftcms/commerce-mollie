@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Changed
+- Mollie for Craft Commerce now supports other payment methods that have issuers. ([#33](https://github.com/craftcms/commerce-mollie/issues/33))
+
 ### Fixed
 - Fixed a bug where expired payments weren’t showing a human-readable error message. ([#37](https://github.com/craftcms/commerce-mollie/issues/37))
 
