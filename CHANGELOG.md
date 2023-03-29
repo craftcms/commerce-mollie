@@ -1,5 +1,10 @@
 # Release Notes for Mollie for Craft Commerce
 
+## 4.1.0.1 - 2023-03-28
+
+### Fixed
+- Fixed a PHP error that occurred when making payments. ([#49](https://github.com/craftcms/commerce-mollie/issues/49))
+
 ## 4.1.0 - 2022-10-07
 
 ### Changed
