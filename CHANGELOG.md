@@ -1,5 +1,9 @@
 # Release Notes for Mollie for Craft Commerce
 
+## 5.0
+
+- Added Craft CMS 5 and Craft Commerce 5 compatibility.
+
 ## 4.1.0.1 - 2023-03-28
 
 ### Fixed
