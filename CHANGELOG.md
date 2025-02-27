@@ -1,5 +1,9 @@
 # Release Notes for Mollie for Craft Commerce
 
+## Unreleased
+
+- Mollie for Commerce now supports iDEAL 2.0. ([#57](https://github.com/craftcms/commerce-mollie/issues/57))
+
 ## 4.2.1 - 2025-02-07
 
 - Added Dutch translations.

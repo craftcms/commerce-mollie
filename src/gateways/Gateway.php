@@ -328,6 +328,12 @@ class Gateway extends OffsiteGateway
         if (!empty($response->getData()) && isset($response->getData()['_embedded']['methods'])) {
             $this->_issuers = [];
             foreach ($response->getData()['_embedded']['methods'] as $method) {
+                // IDEAL no longer uses issuers as of Ideal 2.0
+                // See: https://help.mollie.com/hc/en-us/articles/19100313768338-iDEAL-2-0
+                if ($method['id'] === 'ideal') {
+                    continue;
+                }
+
                 if (empty($method['issuers'])) {
                     continue;
                 }
