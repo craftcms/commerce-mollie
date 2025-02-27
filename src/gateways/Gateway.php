@@ -269,7 +269,17 @@ class Gateway extends OffsiteGateway
         $gateway = $this->createGateway();
         $issuersRequest = $gateway->fetchIssuers($parameters);
 
-        return $issuersRequest->sendData($issuersRequest->getData())->getIssuers();
+        $issuers = $issuersRequest->sendData($issuersRequest->getData())->getIssuers();
+
+        // Remove `ideal` issuers
+        // See: https://help.mollie.com/hc/en-us/articles/19100313768338-iDEAL-2-0
+        foreach ($issuers as $key => $issuer) {
+            if ($issuer->getPaymentMethod() === 'ideal') {
+                unset($issuers[$key]);
+            }
+        }
+
+        return $issuers;
     }
 
     /**

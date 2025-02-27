@@ -1,5 +1,9 @@
 # Release Notes for Mollie for Craft Commerce
 
+## Unreleased
+
+- Mollie for Commerce now supports iDEAL 2.0. ([#57](https://github.com/craftcms/commerce-mollie/issues/57))
+
 ## 3.0.2 - 2022-10-06
 
 ### Fixed
