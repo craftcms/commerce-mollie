@@ -37,6 +37,10 @@
 - Added Craft CMS 4 and Craft Commerce 4 compatibility.
 - All gateway settings now support environment variables.
 
+## 3.1.0 - 2025-02-27
+
+- Mollie for Commerce now supports iDEAL 2.0. ([#57](https://github.com/craftcms/commerce-mollie/issues/57))
+
 ## 3.0.2 - 2022-10-06
 
 ### Fixed
