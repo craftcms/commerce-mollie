@@ -8,6 +8,7 @@
 namespace craft\commerce\mollie\gateways;
 
 use Craft;
+use craft\base\Event;
 use craft\commerce\base\RequestResponseInterface;
 use craft\commerce\errors\CurrencyException;
 use craft\commerce\errors\OrderStatusException;
@@ -17,6 +18,7 @@ use craft\commerce\models\Transaction;
 use craft\commerce\mollie\models\forms\MollieOffsitePaymentForm;
 use craft\commerce\mollie\models\RequestResponse;
 use craft\commerce\omnipay\base\OffsiteGateway;
+use craft\commerce\omnipay\events\SendPaymentRequestEvent;
 use craft\commerce\Plugin as Commerce;
 use craft\commerce\records\Transaction as TransactionRecord;
 use craft\errors\ElementNotFoundException;
@@ -34,6 +36,7 @@ use Omnipay\Common\Message\ResponseInterface;
 use Omnipay\Common\PaymentMethod;
 use Omnipay\Mollie\Gateway as OmnipayGateway;
 use Omnipay\Mollie\Message\Request\FetchTransactionRequest;
+use Omnipay\Mollie\Message\Request\PurchaseRequest;
 use Omnipay\Mollie\Message\Response\FetchPaymentMethodsResponse;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
@@ -120,9 +123,34 @@ class Gateway extends OffsiteGateway
     {
         $request = parent::createPaymentRequest($transaction, $card, $itemBag);
         $email = $transaction->getOrder()?->getEmail() ?? null;
+        $billingAddress = $transaction->getOrder()?->getBillingAddress() ?? null;
 
         if ($email) {
             $request['billingEmail'] = $email;
+        }
+
+        if ($billingAddress) {
+            // Use the event to modify the request data as the parameter is missing on the Mollie Omnipay `PurchaseRequest` class
+            Event::once($this::class, $this::EVENT_BEFORE_SEND_PAYMENT_REQUEST, function(SendPaymentRequestEvent $event) use ($billingAddress) {
+                $requestData = $event->requestData;
+
+                if (!$requestData || !is_array($requestData) || !isset($requestData['method']) || $requestData['method'] !== 'alma') {
+                    return;
+                }
+
+                // Required for Alma payment method
+                $requestData['billingAddress'] = [
+                    'givenName' => $billingAddress->firstName,
+                    'familyName' => $billingAddress->lastName,
+                    'email' => $requestData['billingEmail'],
+                    'streetAndNumber' => $billingAddress->addressLine1,
+                    'city' => $billingAddress->getLocality(),
+                    'postalCode' => $billingAddress->getPostalCode(),
+                    'country' => $billingAddress->getCountryCode(),
+                ];
+
+                $event->modifiedRequestData = $requestData;
+            });
         }
 
         return $request;

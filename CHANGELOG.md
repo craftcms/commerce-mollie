@@ -1,5 +1,9 @@
 # Release Notes for Mollie for Craft Commerce
 
+## Unreleased
+
+- Fixed a bug where `billingAddress` data wasn’t being passed in purchase requests for the “Alma” payment method. ([#68](https://github.com/craftcms/commerce-mollie/issues/68))
+
 ## 4.3.0 - 2025-02-27
 
 - Mollie for Commerce now supports iDEAL 2.0. ([#57](https://github.com/craftcms/commerce-mollie/issues/57))
