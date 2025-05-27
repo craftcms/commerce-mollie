@@ -27,7 +27,6 @@ use craft\helpers\App;
 use craft\helpers\ArrayHelper;
 use craft\web\Response;
 use craft\web\View;
-use Money\Teller;
 use Omnipay\Common\AbstractGateway;
 use Omnipay\Common\CreditCard;
 use Omnipay\Common\Exception\InvalidRequestException;
