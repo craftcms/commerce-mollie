@@ -19,6 +19,7 @@ use craft\commerce\mollie\models\forms\MollieOffsitePaymentForm;
 use craft\commerce\mollie\models\RequestResponse;
 use craft\commerce\omnipay\base\OffsiteGateway;
 use craft\commerce\omnipay\events\SendPaymentRequestEvent;
+use craft\commerce\Plugin;
 use craft\commerce\Plugin as Commerce;
 use craft\commerce\records\Transaction as TransactionRecord;
 use craft\errors\ElementNotFoundException;
@@ -26,6 +27,7 @@ use craft\helpers\App;
 use craft\helpers\ArrayHelper;
 use craft\web\Response;
 use craft\web\View;
+use Money\Teller;
 use Omnipay\Common\AbstractGateway;
 use Omnipay\Common\CreditCard;
 use Omnipay\Common\Exception\InvalidRequestException;
@@ -124,6 +126,7 @@ class Gateway extends OffsiteGateway
         $request = parent::createPaymentRequest($transaction, $card, $itemBag);
         $email = $transaction->getOrder()?->getEmail() ?? null;
         $billingAddress = $transaction->getOrder()?->getBillingAddress() ?? null;
+        $hasMatchingCurrencies = $transaction->currency === $transaction->paymentCurrency;
 
         if ($email) {
             $request['billingEmail'] = $email;
@@ -131,11 +134,66 @@ class Gateway extends OffsiteGateway
 
         if ($billingAddress) {
             // Use the event to modify the request data as the parameter is missing on the Mollie Omnipay `PurchaseRequest` class
-            Event::once($this::class, $this::EVENT_BEFORE_SEND_PAYMENT_REQUEST, function(SendPaymentRequestEvent $event) use ($billingAddress) {
+            Event::once($this::class, $this::EVENT_BEFORE_SEND_PAYMENT_REQUEST, function(SendPaymentRequestEvent $event) use ($billingAddress, $hasMatchingCurrencies, $transaction) {
                 $requestData = $event->requestData;
 
-                if (!$requestData || !is_array($requestData) || !isset($requestData['method']) || $requestData['method'] !== 'alma') {
+                if (!$requestData || !is_array($requestData) || !isset($requestData['method'])) {
                     return;
+                }
+
+                $billingDetailsPaymentMethods = ['alma', 'klarna'];
+                if (!in_array($requestData['method'], $billingDetailsPaymentMethods)) {
+                    return;
+                }
+
+                // Klarna requires passing the line items in the request. If the payment currency does not match the order currency, we cannot pass the line items.
+                if ($requestData['method'] === 'klarna' && !$hasMatchingCurrencies) {
+                    throw new InvalidRequestException('Klarna payment method requires the payment currency to match the order currency.');
+                }
+
+                // Lines for Klarna
+                if ($requestData['method'] === 'klarna') {
+                    $requestData['lines'] = [];
+                    $lineItems = $transaction->getOrder()->getLineItems();
+                    $currency = $transaction->paymentCurrency;
+
+                    $teller = Plugin::getInstance()->getCurrencies()->getTeller($currency);
+                    foreach ($lineItems as $lineItem) {
+                        $requestData['lines'][] = [
+                            'description' => $lineItem->getDescription(),
+                            'quantity' => $lineItem->qty,
+                            'unitPrice' => [
+                                'currency' => $currency,
+                                'value' => $teller->convertToString($lineItem->getSalePrice()),
+                            ],
+                            'discountAmount' => [
+                                'currency' => $currency,
+                                'value' => $teller->convertToString($teller->multiply($lineItem->getDiscount(), -1)),
+                            ],
+                            'totalAmount' => [
+                                'currency' => $currency,
+                                'value' => $teller->convertToString($lineItem->getTotal()),
+                            ],
+                        ];
+                    }
+
+                    // Add shipping line item if it exists
+                    $shippingCost = $transaction->getOrder()->getTotalShippingCost();
+                    if ($shippingCost > 0) {
+                        $requestData['lines'][] = [
+                            'description' => $transaction->getOrder()->shippingMethodName,
+                            'type' => 'shipping_fee',
+                            'quantity' => 1,
+                            'unitPrice' => [
+                                'currency' => $currency,
+                                'value' => $teller->convertToString($shippingCost),
+                            ],
+                            'totalAmount' => [
+                                'currency' => $currency,
+                                'value' => $teller->convertToString($shippingCost),
+                            ],
+                        ];
+                    }
                 }
 
                 // Required for Alma payment method
