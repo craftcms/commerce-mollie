@@ -19,29 +19,29 @@ You can install this plugin from the Plugin Store or with Composer.
 
 #### From the Plugin Store
 
-Go to the Plugin Store in your project’s Control Panel and search for “Mollie for Craft Commerce”. Then click on the “Install” button in its modal window.
+Go to the **Plugin Store** in your project’s control panel and search for “Mollie for Craft Commerce”. Then click on the **Install** button in the sidebar.
 
 #### With Composer
 
 Open your terminal and run the following commands:
 
 ```bash
-# go to the project directory
+# Navigate to your project directory:
 cd /path/to/my-project.test
 
-# tell Composer to load the plugin
+# Require the plugin package with Composer:
 composer require craftcms/commerce-mollie
 
-# tell Craft to install the plugin
-./craft install/plugin commerce-mollie
+# Run the installer:
+./craft plugin/install commerce-mollie
 ```
 
 ## Setup
 
 To add a Mollie payment gateway, go to Commerce → Settings → Gateways, create a new gateway, and set the gateway type to “Mollie”.
 
-> **Tip:** The API Key setting can be set to environment variables. See [Environmental Configuration](https://docs.craftcms.com/v3/config/environments.html) in the Craft docs to learn more about that.
-
+> [!NOTE]
+> The **API Key** setting can be set to environment variables. See [Environmental Configuration](https://craftcms.com/docs/5.x/configure.html#control-panel-settings) in the Craft docs to learn more about using secrets in configuration.
 
 ## Supported Payment Methods
 
