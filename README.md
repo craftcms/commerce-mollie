@@ -42,3 +42,15 @@ To add a Mollie payment gateway, go to Commerce → Settings → Gateways, creat
 
 > [!NOTE]
 > The **API Key** setting can be set to environment variables. See [Environmental Configuration](https://craftcms.com/docs/5.x/configure.html#control-panel-settings) in the Craft docs to learn more about using secrets in configuration.
+
+## Supported Payment Methods
+
+These payment methods have been tested and are supported by Mollie for Craft Commerce. Other payment methods may work, but are untested.
+
+- Credit/Debit Cards
+- iDEAL
+- Bancontact
+- SEPA Bank Transfer
+- Klarna (only when paying in the base currency of the store)
+- Alma
+- Pay by Bank (Bank Transfer)
