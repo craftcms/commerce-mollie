@@ -1,4 +1,13 @@
-{% from "_includes/forms" import autosuggestField %}
+{% from "_includes/forms" import autosuggestField, booleanMenuField %}
+
+{{ booleanMenuField({
+  label: "Should commerce send cart information to gateway when making transactions."|t('commerce'),
+  id: 'sendCartInfo',
+  name: 'sendCartInfo',
+  value: gateway.getSendCartInfo(false),
+  includeEnvVars: true,
+  errors: gateway.getErrors('sendCartInfo'),
+}) }}
 
 {{ autosuggestField({
   label: 'API Key'|t('commerce'),
