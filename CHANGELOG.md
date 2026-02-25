@@ -6,7 +6,7 @@
 
 ## 4.4.0 - 2025-06-13
 
-- Molle for Craft Commerce now supports the Klarna payment method. ([#20](https://github.com/craftcms/commerce-mollie/issues/20))
+- Mollie for Craft Commerce now supports the Klarna payment method. ([#20](https://github.com/craftcms/commerce-mollie/issues/20))
 
 ## 4.3.1 - 2025-05-02
 
