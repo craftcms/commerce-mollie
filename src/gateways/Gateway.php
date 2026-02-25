@@ -10,6 +10,7 @@ namespace craft\commerce\mollie\gateways;
 use Craft;
 use craft\base\Event;
 use craft\commerce\base\RequestResponseInterface;
+use craft\commerce\elements\Order;
 use craft\commerce\errors\CurrencyException;
 use craft\commerce\errors\OrderStatusException;
 use craft\commerce\errors\TransactionException;
@@ -36,6 +37,7 @@ use Omnipay\Common\Message\AbstractResponse;
 use Omnipay\Common\Message\ResponseInterface;
 use Omnipay\Common\PaymentMethod;
 use Omnipay\Mollie\Gateway as OmnipayGateway;
+use Omnipay\Mollie\Item;
 use Omnipay\Mollie\Message\Request\FetchTransactionRequest;
 use Omnipay\Mollie\Message\Request\PurchaseRequest;
 use Omnipay\Mollie\Message\Response\FetchPaymentMethodsResponse;
@@ -78,6 +80,28 @@ class Gateway extends OffsiteGateway
         $settings['apiKey'] = $this->getApiKey(false);
 
         return $settings;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function createItemBagForOrder(Order $order): ?ItemBag
+    {
+        $itemBag = parent::createItemBagForOrder($order);
+
+        if ($itemBag) {
+            // Morph common `Item`s into `Mollie\Item`s
+            $items = $itemBag->all();
+            foreach ($items as $key => $item) {
+                $items[$key] = new Item($item->getParameters());
+            }
+
+            if (!empty($items)) {
+                $itemBag->replace($items);
+            }
+        }
+
+        return $itemBag;
     }
 
     /**
