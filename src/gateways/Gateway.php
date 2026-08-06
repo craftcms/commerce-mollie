@@ -217,6 +217,36 @@ class Gateway extends OffsiteGateway
                             ],
                         ];
                     }
+
+                    // Add order-level discount adjustments that are not included in line items
+                    $adjustments = $transaction->getOrder()->getAdjustments();
+                    foreach ($adjustments as $adjustment) {
+                        if ($adjustment->type !== 'discount' ||
+                            $adjustment->included ||
+                            $adjustment->lineItemId !== null
+                        ) {
+                            continue;
+                        }
+
+                        $amount = $adjustment->amount;
+                        if ($amount >= 0) {
+                            continue;
+                        }
+
+                        $requestData['lines'][] = [
+                            'description' => $adjustment->name ?: Craft::t('commerce', 'Order discount'),
+                            'type' => 'discount',
+                            'quantity' => 1,
+                            'unitPrice' => [
+                                'currency' => $currency,
+                                'value' => $teller->convertToString($amount),
+                            ],
+                            'totalAmount' => [
+                                'currency' => $currency,
+                                'value' => $teller->convertToString($amount),
+                            ],
+                        ];
+                    }
                 }
 
                 // Required for Alma payment method
