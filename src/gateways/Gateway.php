@@ -9,11 +9,13 @@ namespace craft\commerce\mollie\gateways;
 
 use Craft;
 use craft\base\Event;
+use craft\commerce\adjusters\Discount;
 use craft\commerce\base\RequestResponseInterface;
 use craft\commerce\elements\Order;
 use craft\commerce\errors\CurrencyException;
 use craft\commerce\errors\OrderStatusException;
 use craft\commerce\errors\TransactionException;
+use craft\commerce\models\OrderAdjustment;
 use craft\commerce\models\payments\BasePaymentForm;
 use craft\commerce\models\Transaction;
 use craft\commerce\mollie\models\forms\MollieOffsitePaymentForm;
@@ -177,7 +179,8 @@ class Gateway extends OffsiteGateway
                 // Lines for Klarna
                 if ($requestData['method'] === 'klarna') {
                     $requestData['lines'] = [];
-                    $lineItems = $transaction->getOrder()->getLineItems();
+                    $order = $transaction->getOrder();
+                    $lineItems = $order->getLineItems();
                     $currency = $transaction->paymentCurrency;
 
                     $teller = Plugin::getInstance()->getCurrencies()->getTeller($currency);
@@ -201,10 +204,10 @@ class Gateway extends OffsiteGateway
                     }
 
                     // Add shipping line item if it exists
-                    $shippingCost = $transaction->getOrder()->getTotalShippingCost();
+                    $shippingCost = $order->getTotalShippingCost();
                     if ($shippingCost > 0) {
                         $requestData['lines'][] = [
-                            'description' => $transaction->getOrder()->shippingMethodName,
+                            'description' => $order->shippingMethodName,
                             'type' => 'shipping_fee',
                             'quantity' => 1,
                             'unitPrice' => [
@@ -214,6 +217,30 @@ class Gateway extends OffsiteGateway
                             'totalAmount' => [
                                 'currency' => $currency,
                                 'value' => $teller->convertToString($shippingCost),
+                            ],
+                        ];
+                    }
+
+                    // In core Commerce operation it is not possible to have an order level discount.
+                    // Those discount types spread their cost across the line items to make sure things like tax is calculated correctly.
+                    // The following code is to allow anyone registering a custom order level discount to be sent to Klarna.
+                    $discountAdjustments = array_filter($order->getAdjustmentsByType(Discount::ADJUSTMENT_TYPE), function(OrderAdjustment $adjustment) {
+                        return !$adjustment->included && $adjustment->lineItemId === null && $adjustment->amount < 0;
+                    });
+
+                    foreach ($discountAdjustments as $adjustment) {
+                        $value = $teller->convertToString($adjustment->amount);
+                        $requestData['lines'][] = [
+                            'description' => $adjustment->description ?: Craft::t('commerce', 'Discount'),
+                            'type' => 'discount',
+                            'quantity' => 1,
+                            'unitPrice' => [
+                                'currency' => $currency,
+                                'value' => $value,
+                            ],
+                            'totalAmount' => [
+                                'currency' => $currency,
+                                'value' => $value,
                             ],
                         ];
                     }
