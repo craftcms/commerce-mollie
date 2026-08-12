@@ -1,6 +1,6 @@
 # Release Notes for Mollie for Craft Commerce
 
-## Unreleased
+## 4.4.2 - 2026-08-12
 
 - Fixed a bug where custom order level discounts weren’t being passed to Mollie when using the “Klarna” payment method. ([#75](https://github.com/craftcms/commerce-mollie/issues/75))
 
