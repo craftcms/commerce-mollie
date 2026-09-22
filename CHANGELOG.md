@@ -4,9 +4,17 @@
 
 - Fixed a [moderate-severity](https://github.com/craftcms/cms/security/policy#severity--remediation) authorization bypass vulnerability. (GHSA-xxx)
 
+## 4.4.2 - 2026-08-12
+
+- Fixed a bug where custom order level discounts weren’t being passed to Mollie when using the “Klarna” payment method. ([#75](https://github.com/craftcms/commerce-mollie/issues/75))
+
+## 4.4.1 - 2026-02-25
+
+- Fixed a PHP error that could occur when making payments. ([#73](https://github.com/craftcms/commerce-mollie/issues/73))
+
 ## 4.4.0 - 2025-06-13
 
-- Molle for Craft Commerce now supports the Klarna payment method. ([#20](https://github.com/craftcms/commerce-mollie/issues/20))
+- Mollie for Craft Commerce now supports the Klarna payment method. ([#20](https://github.com/craftcms/commerce-mollie/issues/20))
 
 ## 4.3.1 - 2025-05-02
 
