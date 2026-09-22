@@ -283,10 +283,20 @@ class Gateway extends OffsiteGateway
             return $response;
         }
 
+        // The `id` request param is untrusted, so it must match the reference already
+        // stored on the transaction before we trust it; the actual lookup always uses the stored reference.
         $id = Craft::$app->getRequest()->getBodyParam('id');
+
+        if ($id !== $transaction->reference) {
+            Craft::warning('Mollie webhook payment ID “' . $id . '“ did not match the transaction reference for “' . $transactionHash . '“.', 'commerce');
+            $response->data = 'ok';
+
+            return $response;
+        }
+
         $gateway = $this->createGateway();
         /** @var FetchTransactionRequest $request */
-        $request = $gateway->fetchTransaction(['transactionReference' => $id]);
+        $request = $gateway->fetchTransaction(['transactionReference' => $transaction->reference]);
         $res = $request->send();
 
         if (!$res->isSuccessful()) {
