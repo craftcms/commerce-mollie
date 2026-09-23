@@ -1,6 +1,6 @@
 # Release Notes for Mollie for Craft Commerce
 
-## Unreleased
+## 4.4.3 - 2026-09-23
 
 - Fixed a [high-severity](https://github.com/craftcms/cms/security/policy#severity--remediation) authorization bypass vulnerability. (GHSA-3qcx-mjf6-48vj)
 
