@@ -2,7 +2,7 @@
 
 ## 4.4.3 - 2026-09-23
 
-- Fixed a [high-severity](https://github.com/craftcms/cms/security/policy#severity--remediation) authorization bypass vulnerability. (GHSA-3qcx-mjf6-48vj)
+- Fixed a [high-severity](https://github.com/craftcms/cms/security/policy#severity--remediation) authorization bypass vulnerability. ([GHSA-3qcx-mjf6-48vj](https://github.com/craftcms/commerce-mollie/security/advisories/GHSA-3qcx-mjf6-48vj))
 
 ## 4.4.2 - 2026-08-12
 
