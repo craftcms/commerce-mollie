@@ -1,5 +1,16 @@
 # Release Notes for Mollie for Craft Commerce
 
+## Unreleased
+
+> [!WARNING]
+> This release requires Craft Commerce 6. See [UPGRADE.md](UPGRADE.md) for the breaking changes.
+
+- Mollie for Craft Commerce now requires Craft CMS 6, Craft Commerce 6 and PHP 8.5.
+- The plugin now uses the Mollie Payments API directly, and no longer requires `craftcms/commerce-omnipay` or `omnipay/mollie`.
+- Moved all classes to the `CraftCms\CommerceMollie` namespace. `craft\commerce\mollie\gateways\Gateway` is kept as an alias of `CraftCms\CommerceMollie\Gateway`.
+- Added `CraftCms\CommerceMollie\Events\PaymentRequestBuilding`, which replaces the Omnipay request events.
+- Removed the “Send cart information” gateway setting.
+
 ## 4.4.3 - 2026-09-23
 
 - Fixed a [high-severity](https://github.com/craftcms/cms/security/policy#severity--remediation) authorization bypass vulnerability. ([GHSA-3qcx-mjf6-48vj](https://github.com/craftcms/commerce-mollie/security/advisories/GHSA-3qcx-mjf6-48vj))
