@@ -9,6 +9,7 @@
 - The plugin now uses the Mollie Payments API directly, and no longer requires `craftcms/commerce-omnipay` or `omnipay/mollie`.
 - Moved all classes to the `CraftCms\CommerceMollie` namespace. `craft\commerce\mollie\gateways\Gateway` is kept as an alias of `CraftCms\CommerceMollie\Gateway`.
 - Added `CraftCms\CommerceMollie\Events\PaymentRequestBuilding`, which replaces the Omnipay request events.
+- The payment form is now built with `paymentFormUi()`. The `commerce-mollie/paymentForm` template was removed.
 - Removed the “Send cart information” gateway setting.
 
 ## 4.4.3 - 2026-09-23

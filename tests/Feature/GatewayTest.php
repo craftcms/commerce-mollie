@@ -252,10 +252,20 @@ it('renders the payment methods and issuers in the payment form', function() {
         ['id' => 'kbc', 'description' => 'KBC/CBC Payment Button', 'issuers' => [['id' => 'kbc', 'name' => 'KBC']]],
     ]]])]);
 
-    $html = mollieGateway()->getPaymentFormHtml([]);
+    $html = mollieGateway()->getPaymentFormHtml(['paymentForm' => new MolliePaymentForm(['paymentMethod' => 'kbc'])]);
 
-    expect($html)->toContain('<option value="ideal">iDEAL</option>')
+    expect($html)->toContain('name="paymentMethod"')
+        ->toContain('<option value="ideal">iDEAL</option>')
+        ->toContain('<option value="kbc" selected>KBC/CBC Payment Button</option>')
+        ->toContain('name="issuer"')
         ->toContain('<optgroup label="KBC/CBC Payment Button">')
         ->toContain('<option value="kbc">KBC</option>')
+        // iDEAL 2.0 has no issuers.
         ->not->toContain('ABN AMRO');
+});
+
+it('renders no payment form when the payment methods can’t be fetched', function() {
+    Http::fake(['api.mollie.com/v2/methods*' => Http::response(['status' => 401, 'title' => 'Unauthorized Request'], 401)]);
+
+    expect(mollieGateway()->getPaymentFormHtml([]))->toBeNull();
 });

@@ -78,4 +78,6 @@ The “Send cart information” (`sendCartInfo`) setting was removed. Klarna pay
 
 ### Templates and Twig
 
+The `commerce-mollie/paymentForm` template was removed. The gateway now builds its payment form with Commerce 6’s `paymentFormUi()`, and `gateway.getPaymentFormHtml()` renders it as before. To change the form, extend the gateway and override `paymentFormUi()`, or render your own form.
+
 The payment form posts the same `paymentMethod` and `issuer` fields as before. If you render your own payment form, `gateway.fetchPaymentMethods()` returns arrays with `id`, `name` and `issuers` keys.

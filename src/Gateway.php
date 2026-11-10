@@ -7,11 +7,11 @@ namespace CraftCms\CommerceMollie;
 use CraftCms\Cms\Cp\SelectOptions;
 use CraftCms\Cms\Support\Env;
 use CraftCms\Cms\Support\Url;
+use CraftCms\Cms\Ui\Controls\Choice;
 use CraftCms\Cms\Ui\Controls\Text;
 use CraftCms\Cms\Ui\Nodes\Field;
 use CraftCms\Cms\Ui\Ui;
 use CraftCms\Cms\Ui\UiContext;
-use CraftCms\Cms\View\TemplateMode;
 use CraftCms\Commerce\Exceptions\NotImplementedException;
 use CraftCms\Commerce\Order\Adjuster\Discount;
 use CraftCms\Commerce\Order\Data\OrderAdjustment;
@@ -36,7 +36,6 @@ use Override;
 use Throwable;
 
 use function CraftCms\Cms\t;
-use function CraftCms\Cms\template;
 
 /**
  * Mollie payment gateway, using the Mollie Payments API.
@@ -110,21 +109,33 @@ class Gateway extends BaseGateway
     }
 
     #[Override]
-    public function getPaymentFormHtml(array $params): ?string
+    public function paymentFormUi(BasePaymentForm $form, array $params = []): ?Ui
     {
         try {
             $methods = $this->fetchPaymentMethods();
         } catch (Throwable $e) {
             // Without the methods, customers can still choose one on Mollie’s checkout.
             Log::warning('Unable to fetch Mollie payment methods: ' . $e->getMessage());
-            $methods = [];
+            return null;
         }
 
-        return template('commerce-mollie/paymentForm', array_merge([
-            'gateway' => $this,
-            'paymentForm' => $this->getPaymentFormModel(),
-            'paymentMethods' => $methods,
-        ], $params), TemplateMode::Cp);
+        if ($methods === []) {
+            return null;
+        }
+
+        $issuerOptions = [];
+        foreach ($methods as $method) {
+            foreach ($method['issuers'] as $issuer) {
+                $issuerOptions[] = ['label' => $issuer['name'], 'value' => $issuer['id'], 'group' => $method['name']];
+            }
+        }
+
+        return Ui::make([
+            Field::make(t('Payment Method', category: 'commerce-mollie'), Choice::make('paymentMethod')
+                ->options(array_map(fn(array $method) => ['label' => $method['name'], 'value' => $method['id']], $methods))),
+        ])->when($issuerOptions !== [], fn(Ui $ui) => $ui->add(
+            Field::make(t('Issuer', category: 'commerce-mollie'), Choice::make('issuer')->options($issuerOptions)),
+        ));
     }
 
     /**
